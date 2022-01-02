@@ -1,11 +1,11 @@
-package com.pravin.barcodeapp.mynotes
+package com.pravin.barcodeapp.mynotes.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity
-class Note(
+data class Note(
     @PrimaryKey(autoGenerate = true)
     val Id:Int,
 
