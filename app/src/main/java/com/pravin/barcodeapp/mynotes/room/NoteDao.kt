@@ -23,4 +23,5 @@ public interface NoteDao {
     fun deleteNote(note: Note)
 
 
+
 }

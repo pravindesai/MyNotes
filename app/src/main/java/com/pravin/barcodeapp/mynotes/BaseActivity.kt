@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.applandeo.materialcalendarview.CalendarDay
+import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.utils.SelectedDay
 import com.pravin.barcodeapp.mynotes.room.NoteDB
 import com.pravin.barcodeapp.mynotes.room.NoteDao
@@ -23,11 +24,11 @@ import kotlin.collections.ArrayList
 open class BaseActivity: AppCompatActivity() {
     val TAG = "**";
 
-
-    override fun onStart() {
-        super.onStart()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         supportActionBar?.elevation = 0F
     }
+
 
     fun getToday():CalendarDay{
         val calendarDay = CalendarDay(Calendar.getInstance())
@@ -50,6 +51,7 @@ open class BaseActivity: AppCompatActivity() {
 
         return dayList
     }
+
 
     fun getFormattedDate(cal: Calendar):String{
         //11 Oct 2021, Monday

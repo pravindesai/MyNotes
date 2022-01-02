@@ -9,7 +9,7 @@
 
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/mCalender"
-        app:type="many_days_picker"
+        app:type="one_day_picker"
         app:abbreviationsBarColor="@color/white"
         app:headerColor="@color/primary"
         app:todayLabelColor="@color/primary"

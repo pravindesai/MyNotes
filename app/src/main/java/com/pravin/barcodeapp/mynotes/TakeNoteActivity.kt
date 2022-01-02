@@ -23,10 +23,13 @@ import java.util.*
 
 
 class TakeNoteActivity : BaseActivity() {
+    companion object{
+        val NEW_NOTE_MODE = "NEW_NOTE"
+        val UPDATE_NOTE_MODE = "UPDATE_NOTE"
+    }
     lateinit var NOTEDAO:NoteDao
 
-    private val NEW_NOTE_MODE = "NEW_NOTE"
-    private val UPDATE_NOTE_MODE = "UPDATE_NOTE"
+
     private var MODE = NEW_NOTE_MODE
 
 
@@ -55,7 +58,6 @@ class TakeNoteActivity : BaseActivity() {
 
             title    = titleEt.text.toString()
             text     = noteEt.text.toString()
-            epoch    = System.currentTimeMillis()
 
             if (title.isEmpty()||title.isBlank()) {
                 titleEt.setError("Required")
@@ -77,6 +79,8 @@ class TakeNoteActivity : BaseActivity() {
             }
 
             val noteMainActivityIntent:Intent = Intent(this,NoteMainActivity::class.java)
+            noteMainActivityIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+
             startActivity(noteMainActivityIntent)
 
         }
@@ -95,16 +99,21 @@ class TakeNoteActivity : BaseActivity() {
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
 
         NOTEDAO = NoteDB.getInstance(this)!!.noteDao()
+        epoch = intent.getLongExtra("DATE", System.currentTimeMillis())
+        MODE  = intent.getStringExtra("MODE").toString()
         initUI()
 
-            MODE = NEW_NOTE_MODE
-            dateTv.setText(getFormattedDate(Calendar.getInstance()))
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = epoch
+        dateTv.setText(getFormattedDate(cal))
+        MODE = NEW_NOTE_MODE
 
-//        if (intent.hasExtra("str") == true){
-//            MODE = NEW_NOTE_MODE
-//        }else{
-//            MODE = UPDATE_NOTE_MODE
-//        }
+
+        if (MODE.equals(NEW_NOTE_MODE)){
+
+        }else{
+
+        }
 
         Log.e(TAG, "onStart: MODE "+MODE )
 
