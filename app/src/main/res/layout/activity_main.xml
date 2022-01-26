@@ -4,22 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteMainActivity">
+    tools:context=".NoteMainActivity"
+    android:background="@color/grey"
+    android:backgroundTint="@color/white">
 
 
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/mCalender"
-        app:type="one_day_picker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:showDividers="none"
         app:abbreviationsBarColor="@color/white"
         app:headerColor="@color/primary"
-        app:todayLabelColor="@color/primary"
-        android:layout_width="0dp"
-        app:maximumDaysRange="31"
-        android:showDividers="none"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maximumDaysRange="31"
+        app:todayLabelColor="@color/primary"
+        app:type="one_day_picker" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +43,7 @@
         android:id="@+id/notesRv"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

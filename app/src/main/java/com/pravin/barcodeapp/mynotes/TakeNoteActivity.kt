@@ -2,24 +2,32 @@ package com.pravin.barcodeapp.mynotes
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.pravin.barcodeapp.mynotes.room.Note
 import com.pravin.barcodeapp.mynotes.room.NoteDB
-import com.pravin.barcodeapp.mynotes.room.NoteDB_Impl
 import com.pravin.barcodeapp.mynotes.room.NoteDao
-import java.time.Instant
-import androidx.core.app.ActivityCompat.startActivityForResult
-import android.provider.MediaStore
 import android.widget.TextView
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import java.io.FileDescriptor
+import java.io.IOException
 import java.util.*
+import android.content.Context
+import java.io.FileOutputStream
+import java.lang.Exception
+import android.content.ContextWrapper
+import androidx.core.content.ContextCompat
+import java.io.File
 
 
 class TakeNoteActivity : BaseActivity() {
@@ -39,11 +47,12 @@ class TakeNoteActivity : BaseActivity() {
     lateinit var titleEt:EditText
     lateinit var noteEt:EditText
     lateinit var button: Button
+    lateinit var note: Note
 
     lateinit var title:String
     lateinit var text:String
-    var imgPath:String = ""
-    var epoch:Long  = System.currentTimeMillis()
+    lateinit var bitmap:Bitmap
+             var epoch:Long  = System.currentTimeMillis()
 
     private fun initUI() {
         dateTv    = findViewById(R.id.dateTv)
@@ -52,7 +61,7 @@ class TakeNoteActivity : BaseActivity() {
         titleEt = findViewById(R.id.titleEt)
         noteEt = findViewById(R.id.noteEt)
         button = findViewById(R.id.button)
-
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.photo_placeholder)
 
         button.setOnClickListener {
 
@@ -71,11 +80,15 @@ class TakeNoteActivity : BaseActivity() {
             }
 
             if (MODE.equals(NEW_NOTE_MODE)) {
-                var note:Note = Note(0,title, text, imgPath, epoch)
+                note = Note(0,title, text, bitmap, epoch)
                 NOTEDAO.insertNote(note)
 
             } else if (MODE.equals(UPDATE_NOTE_MODE)) {
-
+                note.Title = title
+                note.Text = text
+                note.img = bitmap
+                note.DayEpochTimeStamp = epoch
+                NOTEDAO.insertNote(note)
             }
 
             val noteMainActivityIntent:Intent = Intent(this,NoteMainActivity::class.java)
@@ -86,7 +99,7 @@ class TakeNoteActivity : BaseActivity() {
         }
         imageView.setOnClickListener { cameraIcon.performClick() }
         cameraIcon.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.type = "image/*"
             ACTIVITYONRESULT_IMG_LAUNCHER.launch(intent)
         }
@@ -106,13 +119,23 @@ class TakeNoteActivity : BaseActivity() {
         val cal = Calendar.getInstance()
         cal.timeInMillis = epoch
         dateTv.setText(getFormattedDate(cal))
-        MODE = NEW_NOTE_MODE
 
 
         if (MODE.equals(NEW_NOTE_MODE)){
-
+            Log.e(TAG, "onCreate: NEW NOTE" )
         }else{
+            note = sharedNote
+            title   = note.Title
+            text    = note.Text
+            bitmap  = note.img!!
+            epoch   = note.DayEpochTimeStamp
 
+            titleEt.setText(title)
+            noteEt.setText(text)
+            dateTv.text = getFormattedDate(epochToCalender(epoch))
+            Glide.with(this).load(bitmap).into(imageView)
+
+            button.text = "Update"
         }
 
         Log.e(TAG, "onStart: MODE "+MODE )
@@ -135,10 +158,35 @@ class TakeNoteActivity : BaseActivity() {
     var ACTIVITYONRESULT_IMG_LAUNCHER = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-            imgPath = data?.data.toString()
-            Glide.with(this).load(imgPath).into(imageView)
-            Log.e(TAG, ": "+imgPath )
+
+            val bMap = uriToBitmap(data?.data.toString().toUri())
+
+            try {
+                if (bMap != null) {
+                    bitmap = bMap
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            Glide.with(this).load(bitmap).into(imageView)
+
         }
+    }
+
+
+    private fun uriToBitmap(selectedFileUri: Uri): Bitmap? {
+        try {
+            val parcelFileDescriptor: ParcelFileDescriptor? =
+                getContentResolver().openFileDescriptor(selectedFileUri, "r")
+            val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
+            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor?.close()
+            return image
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 
 

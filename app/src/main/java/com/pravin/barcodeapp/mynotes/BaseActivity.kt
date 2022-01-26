@@ -1,23 +1,12 @@
 package com.pravin.barcodeapp.mynotes
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import com.applandeo.materialcalendarview.CalendarDay
-import com.applandeo.materialcalendarview.EventDay
-import com.applandeo.materialcalendarview.utils.SelectedDay
-import com.pravin.barcodeapp.mynotes.room.NoteDB
+import com.pravin.barcodeapp.mynotes.room.Note
 import com.pravin.barcodeapp.mynotes.room.NoteDao
-import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.util.*
-import java.time.temporal.TemporalQueries.localDate
 import kotlin.collections.ArrayList
 
 
@@ -29,6 +18,34 @@ open class BaseActivity: AppCompatActivity() {
         supportActionBar?.elevation = 0F
     }
 
+    companion object{
+        var sharedNote:Note = Note(1,"","", null, Long.MIN_VALUE)
+        fun getStartTimestamp(month: Int, year: Int): Long {
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            calendar[Calendar.MONTH] = month
+            calendar[Calendar.YEAR] = year
+            calendar[Calendar.DAY_OF_MONTH] = calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.HOUR_OF_DAY] = 0
+            calendar[Calendar.MINUTE] = 0
+            calendar[Calendar.SECOND] = 0
+            calendar[Calendar.MILLISECOND] = 0
+            return calendar.timeInMillis
+        }
+
+        fun getEndTimestamp(month: Int, year: Int): Long {
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            calendar[Calendar.MONTH] = month
+            calendar[Calendar.YEAR] = year
+            calendar[Calendar.DAY_OF_MONTH] = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.HOUR_OF_DAY] = 23
+            calendar[Calendar.MINUTE] = 59
+            calendar[Calendar.SECOND] = 59
+            calendar[Calendar.MILLISECOND] = 0
+            return calendar.timeInMillis
+        }
+    }
 
     fun getToday():CalendarDay{
         val calendarDay = CalendarDay(Calendar.getInstance())
@@ -52,7 +69,6 @@ open class BaseActivity: AppCompatActivity() {
         return dayList
     }
 
-
     fun getFormattedDate(cal: Calendar):String{
         //11 Oct 2021, Monday
         val dayName: String? =
@@ -65,6 +81,12 @@ open class BaseActivity: AppCompatActivity() {
                     " ${cal.get(Calendar.YEAR)}, "+
                     dayName
 
+    }
+
+    fun epochToCalender(timeInMillies:Long):Calendar{
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = timeInMillies
+        return cal
     }
 
 
