@@ -1,9 +1,10 @@
-package com.pravin.mynotes
+package com.pravin.mynotes.activity
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.applandeo.materialcalendarview.CalendarDay
+import com.pravin.mynotes.R
 import com.pravin.mynotes.room.Note
 import com.pravin.mynotes.room.NoteDao
 import java.util.*

@@ -1,4 +1,4 @@
-package com.pravin.mynotes
+package com.pravin.mynotes.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.pravin.mynotes.listeners.OnNoteListner
+import com.pravin.mynotes.R
+import com.pravin.mynotes.activity.NoteMainActivity
 import com.pravin.mynotes.room.Note
 
-class NotesAdapter(val context:NoteMainActivity, val notesList: List<Note>, val onNoteClickListner:OnNoteListner): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotesAdapter(val context: NoteMainActivity, val notesList: List<Note>, val onNoteClickListner: OnNoteListner): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class NoteCardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var timeTv:          TextView = view.findViewById(R.id.timeTv)

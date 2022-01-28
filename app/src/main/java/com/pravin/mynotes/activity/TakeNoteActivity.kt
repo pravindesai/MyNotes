@@ -1,4 +1,4 @@
-package com.pravin.mynotes
+package com.pravin.mynotes.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -19,6 +19,7 @@ import com.pravin.mynotes.room.NoteDao
 import android.widget.TextView
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import com.pravin.mynotes.R
 import java.io.FileDescriptor
 import java.io.IOException
 import java.util.*
@@ -85,7 +86,7 @@ class TakeNoteActivity : BaseActivity() {
                 NOTEDAO.insertNote(note)
             }
 
-            val noteMainActivityIntent:Intent = Intent(this,NoteMainActivity::class.java)
+            val noteMainActivityIntent:Intent = Intent(this, NoteMainActivity::class.java)
             noteMainActivityIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
 
             startActivity(noteMainActivityIntent)

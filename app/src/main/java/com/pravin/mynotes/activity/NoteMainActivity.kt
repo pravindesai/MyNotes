@@ -1,4 +1,4 @@
-package com.pravin.mynotes
+package com.pravin.mynotes.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +12,9 @@ import java.util.*
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
+import com.pravin.mynotes.adapter.NotesAdapter
+import com.pravin.mynotes.listeners.OnNoteListner
+import com.pravin.mynotes.R
 import com.pravin.mynotes.room.Note
 import com.pravin.mynotes.room.NoteDB
 import com.pravin.mynotes.room.NoteDao
@@ -26,7 +29,7 @@ class NoteMainActivity : BaseActivity() {
     lateinit var NOTEDAO:NoteDao
 
     lateinit var notesList:List<Note>
-    lateinit var notesAdapter:NotesAdapter
+    lateinit var notesAdapter: NotesAdapter
 
     public var selectedDay:Calendar = Calendar.getInstance()
 
@@ -61,7 +64,8 @@ class NoteMainActivity : BaseActivity() {
         Log.e(TAG, "total dates: "+NOTEDAO.getAllDatesWithNotes().size )
         Log.e(TAG, "date for month dates: "+ NOTEDAO.getAllNotesFor(
             getStartTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] ),
-            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] ))
+            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] )
+        )
         )
     }
 
@@ -74,7 +78,8 @@ class NoteMainActivity : BaseActivity() {
 
         notesList = ArrayList(NOTEDAO.getAllNotesFor(
             getStartTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] ),
-            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] )))
+            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] )
+        ))
 
             notesAdapter = NotesAdapter(this, notesList, mOnNoteClickListner)
             notesRv.adapter = notesAdapter
@@ -107,12 +112,12 @@ class NoteMainActivity : BaseActivity() {
 
             val takeNoteIntent = Intent(context, TakeNoteActivity::class.java)
             takeNoteIntent.putExtra("DATE", context.selectedDay.timeInMillis)
-            takeNoteIntent.putExtra("MODE",TakeNoteActivity.NEW_NOTE_MODE)
+            takeNoteIntent.putExtra("MODE", TakeNoteActivity.NEW_NOTE_MODE)
             context.startActivity(takeNoteIntent)
         }
     }
 
-    inner class OnNoteClickListner:OnNoteListner{
+    inner class OnNoteClickListner: OnNoteListner {
         override fun onNoteDeleteClicked(note: Note, pos:Int) {
             NOTEDAO.deleteNote(note)
 
@@ -122,7 +127,7 @@ class NoteMainActivity : BaseActivity() {
         override fun onNoteClicked(note: Note, pos: Int) {
             val takeNoteIntent = Intent(this@NoteMainActivity, TakeNoteActivity::class.java)
             takeNoteIntent.putExtra("DATE", selectedDay.timeInMillis)
-            takeNoteIntent.putExtra("MODE",TakeNoteActivity.UPDATE_NOTE_MODE)
+            takeNoteIntent.putExtra("MODE", TakeNoteActivity.UPDATE_NOTE_MODE)
             sharedNote = note
             startActivity(takeNoteIntent)
         }
@@ -135,7 +140,8 @@ class NoteMainActivity : BaseActivity() {
 
         var list = ArrayList(NOTEDAO.getAllNotesFor(
             getStartTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] ),
-            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] )))
+            getEndTimestamp(selectedDay[Calendar.MONTH], selectedDay[Calendar.YEAR] )
+        ))
 
         notesAdapter = NotesAdapter(this@NoteMainActivity, list, mOnNoteClickListner)
         notesRv.adapter = notesAdapter

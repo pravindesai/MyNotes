@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyNotes">
         <activity
-            android:name=".TakeNoteActivity"
+            android:name=".activity.TakeNoteActivity"
             android:launchMode="singleTask"
             android:exported="false" />
         <activity
-            android:name=".NoteMainActivity"
+            android:name=".activity.NoteMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
